@@ -17,4 +17,4 @@ Aplikasi Pencatatan Keuangan adalah aplikasi yang bisa membantu anda dalam menca
 
 ## Catatan
 
-Dokumentasi dari aplikasi ini terdapat pada file PencatatanKeuangan.postman_collection di dalam project ini
+Dokumentasi dari aplikasi ini terdapat pada file PencatatanKeuangan.postman_collection di dalam project ini. Dokumentasi tersebut dapat diakses lewat aplikasi postman, dengan mengimport file tersebut ke dalam aplikasi postman. 
