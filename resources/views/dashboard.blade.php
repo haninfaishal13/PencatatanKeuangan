@@ -4,7 +4,7 @@
     <div class="mb-3">
         <div class="d-flex">
             <h3 id="user">...</h3>
-            <button class="btn btn-primary btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#modal-tambah-keuangan"><i class="fas fa-plus me-2"></i>Tambah</button>
+            <button class="btn btn-primary btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#modal-tambah-keuangan"><i class="fas fa-plus me-2"></i>Tambah Transaksi</button>
         </div>
         Total Saldo: <h5 id="total-saldo">...</h5>
     </div>
