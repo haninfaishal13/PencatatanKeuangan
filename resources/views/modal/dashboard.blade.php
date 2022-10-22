@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal-tambah-keuangan" tabindex="-1" aria-labelledby="register-label" aria-hidden="true">
+<div class="modal fade" id="modal-tambah-keuangan" aria-labelledby="register-label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,8 +24,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="sub-category-tambah-keuangan" class="form-label">Tujuan:</label>
-                        <select name="sub_category" id="sub-category-tambah-keuangan" class="form-select">
+                        <select name="sub_category" id="sub-category-tambah-keuangan" class="sub-category-select select2-upper" style="width:100%">
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="keterangan-tambah-keuangan" class="form-label">Keterangan:</label>
+                        <input type="text" name="keterangan" id="keterangan-tambah-keuangan" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">

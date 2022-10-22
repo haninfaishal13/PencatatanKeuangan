@@ -44,7 +44,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <p class="fw-bold">Rekap Pengeluaran</p>
+            <p class="fw-bold">Rekap Keuangan Bulanan</p>
         </div>
         <div class="card-body">
             <div class="mb-3">
@@ -70,7 +70,7 @@
                         Tahun:
                         <input type="number" id="select-tahun" class="form-control" value="{{date('Y')}}">
                     </div>
-                    <div class="col-md-2 col-sm-12 mb-2">
+                    <div class="col-md-2 col-sm-12 mb-2 d-grid gap-2">
                         <button type="button" class="btn btn-primary btn-sm" id="keuangan-bulanan">Check</button>
                     </div>
                 </div>
@@ -111,5 +111,6 @@
     @include('modal.dashboard')
 @endsection
 @section('after-script')
+    <script src="{{asset('js/dashboard/keuangan.js')}}"></script>
     <script src="{{asset('js/dashboard/index.js')}}"></script>
 @endsection

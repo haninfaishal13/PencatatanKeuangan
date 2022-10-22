@@ -5,28 +5,26 @@ use App\Models\SubCategory;
 
 class SubCategoryHelper
 {
-    public static function getSubCategoryAll()
+    public static function getSubCategoryAll($request)
     {
-        $subcategory = SubCategory::select('id', 'category_id', 'name')->orderBy('category_id', 'asc')->get();
+        if($request->search == null) {
+            $subcategory = SubCategory::select('id', 'category_id', 'name')->orderBy('category_id', 'asc')->get();
+        } else {
+            $subcategory = SubCategory::select('id', 'category_id', 'name')->where("name", "like", "%".$request->search."%")->orderBy('category_id', 'asc')->get();
+        }
+
         return $subcategory;
     }
 
     public static function selectSubcategory($request)
     {
         if($request->search == null) {
-            $subcategories = self::getSubCategoryAll();
+            $subcategories = SubCategory::select('id as id', 'name as text', 'category_id')->orderBy('category_id', 'asc')->get();
         } else {
-            $subcategories = self::getSubCategoryAll()->where("name", "like", "%{$request->search}%");
+            $subcategories = SubCategory::select('id as id', 'name as text', 'category_id')->where("name", "like", "%{$request->search}%")->orderBy('category_id', 'asc')->get();
         }
 
-        $response = [];
-        foreach($subcategories as $subcategory) {
-            array_push($response, array(
-                'id' => $subcategory->id,
-                'text' => $subcategory->name
-            ));
-        }
-        return $response;
+        return $subcategories;
     }
 
     public static function getSubCategory($id)

@@ -2,15 +2,14 @@ getCategory()
 
 $(document).on('click', '.btn-modal-subcategory', function() {
     let category_id = $(this).data('id')
-    $('#modal-subcategory').on('shown.bs.modal', function() {
-        getSubCategory(category_id)
-    });
+    $('#modal-subcategory').data('id', category_id)
+    $('#modal-subcategory').modal('show')
 })
 
 $(document).on('click', '.btn-edit', function() {
     let category_id = $(this).data('id')
+    $('#modal-edit-category').data('id', category_id)
     $('#modal-edit-category').on('shown.bs.modal', function() {
-        $('#modal-edit-category').data('id', category_id)
         showCategory(category_id)
     })
 })
@@ -109,7 +108,7 @@ function getCategory() {
                     <td>${index + 1}</td>
                     <td>${value.name}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm btn-modal-subcategory" title="Lihat Subkategori" id="show${value.id}" data-id="${value.id}" data-bs-toggle="modal" data-bs-target="#modal-subcategory"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-primary btn-sm btn-modal-subcategory" title="Lihat Subkategori" id="show${value.id}" data-id="${value.id}"><i class="fas fa-eye"></i></button>
                         <button class="btn btn-warning btn-sm btn-edit" title="Edit" id="edit${value.id}" data-id="${value.id}" data-bs-toggle="modal" data-bs-target="#modal-edit-category"><i class="far fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm btn-delete" title="Delete" id="delete${value.id}" data-id="${value.id}"><i class="fas fa-trash-alt"></i></button>
                     </td>
@@ -133,40 +132,6 @@ function showCategory(id) {
         }
     })
 }
-function getSubCategory(category_id) {
-    $.ajax({
-        url: base_url + '/api/category',
-        method: 'get',
-        data: {
-            category_id: category_id
-        },
-        success: function(resp) {
-            $('#name-category').html(resp.data.name)
-            let html = ``
-            if(resp.data != null) {
-                $.each(resp.data.sub_category, function(index, value) {
-                    html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${value.name}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" title="Edit" id="edit${value.id}" data-id="${value.id}"><i class="far fa-edit"></i></button>
-                            <button class="btn btn-danger btn-sm" title="Delete" id="delete${value.id}" data-id="${value.id}"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    `
-                })
-            } else {
-                html += `
-                <tr>
-                    <td colspan="3">Tidak ada data</td>
-                </tr>
-                `
-            }
-            $('#tb-subcategory').html(html)
-        }
-    })
-}
 
 function deleteCategory(id) {
     let data = {id: id}
@@ -178,36 +143,37 @@ function deleteCategory(id) {
         confirmButtonText: `Ya`,
         denyButtonText: `Kembali`,
     }).then((result) => {
-        $.ajax({
-            url: base_url + '/api/category/delete',
-            method: 'delete',
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(data),
-            headers: {
-                "Authorization" : "Bearer "+localStorage.getItem('token')
-            },
-            beforeSend: function beforeSend() {
-                Swal.fire({
-                    title: 'Loading...',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    didOpen: function didOpen() {
-                        Swal.showLoading()
-                    }
-                })
-            },
-            success: function(resp) {
-                Swal.close()
-                $('#modal-tambah-category').modal('hide')
-                Swal.fire('Sukses', resp.message, 'success')
-                getCategory()
-            },
-            error: function(resp) {
-                Swal.close()
-                Swal.fire('Error', resp.message, 'error')
-            }
-        })
+        if(result.isConfirmed) {
+            $.ajax({
+                url: base_url + '/api/category/delete',
+                method: 'delete',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                headers: {
+                    "Authorization" : "Bearer "+localStorage.getItem('token')
+                },
+                beforeSend: function beforeSend() {
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        didOpen: function didOpen() {
+                            Swal.showLoading()
+                        }
+                    })
+                },
+                success: function(resp) {
+                    Swal.close()
+                    $('#modal-tambah-category').modal('hide')
+                    Swal.fire('Sukses', resp.message, 'success')
+                    getCategory()
+                },
+                error: function(resp) {
+                    Swal.close()
+                    Swal.fire('Error', resp.message, 'error')
+                }
+            })
+        }
     })
-
 }

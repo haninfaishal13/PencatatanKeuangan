@@ -21,10 +21,10 @@ class SubCategoryController extends Controller
         ]);
     }
 
-    public function selectSubCategory()
+    public function selectSubCategory(Request $request)
     {
 
-        $subcategory = SubCategoryHelper::getSubCategoryAll();
+        $subcategory = SubCategoryHelper::selectSubCategory($request);
         return response()->json([
             'success' => true,
             'message' => 'Berhasil mendapatkan subkategori',

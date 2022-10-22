@@ -1,5 +1,5 @@
 $('#form-register').on('submit', function(event) {
-    event.prefentDefault()
+    event.preventDefault()
     let data = {
         'email': $('#register-email').val(),
         'name': $('#register-name').val(),
@@ -11,15 +11,26 @@ $('#form-register').on('submit', function(event) {
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(data),
-    })
-    .done(function(resp) {
-        set_token(resp.token)
-        $('#register-modal').modal('hide')
-        alert('Berhasil Register')
-        window.location.replace(base_url + '/frontend/dashboard')
-    })
-    .fail(function(resp) {
-        Swal2.fire('Error', resp.responseJSON.message, 'error')
+        beforeSend: function beforeSend() {
+            Swal.fire({
+                title: 'Loading...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: function didOpen() {
+                    Swal.showLoading()
+                }
+            })
+        },
+        success: function(resp) {
+            Swal.close()
+            set_token(resp.token)
+            $('#register-modal').modal('hide')
+            Swal.fire('Sukses', resp.message, 'success').then(function() {
+                window.location.replace(base_url + '/frontend/dashboard')
+            })
+        }, error: function(resp) {
+            Swal.fire('Error', resp.responseJSON.message, 'error')
+        }
     })
 })
 
@@ -35,14 +46,24 @@ $('#form-login').on('submit', function(event) {
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(data),
-    })
-    .done(function(resp) {
-        set_token(resp.token)
-        $('#login-modal').modal('hide')
-        window.location.replace(base_url + '/frontend/dashboard')
-    })
-    .fail(function(resp) {
-        Swal.fire('Error', resp.responseJSON.message, 'error')
+        beforeSend: function beforeSend() {
+            Swal.fire({
+                title: 'Loading...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: function didOpen() {
+                    Swal.showLoading()
+                }
+            })
+        },
+        success: function(resp) {
+            Swal.close()
+            set_token(resp.token)
+            $('#login-modal').modal('hide')
+            window.location.replace(base_url + '/frontend/dashboard')
+        }, error: function(resp) {
+            Swal.fire('Error', resp.responseJSON.message, 'error')
+        }
     })
 })
 

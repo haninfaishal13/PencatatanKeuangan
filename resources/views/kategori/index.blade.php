@@ -23,4 +23,5 @@
 @endsection
 @section('after-script')
     <script src="{{asset('js/kategori/index.js')}}"></script>
+    <script src="{{asset('js/kategori/subcategory.js')}}"></script>
 @endsection

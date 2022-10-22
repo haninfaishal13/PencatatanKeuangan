@@ -68,18 +68,22 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $bearer = $request->bearerToken();
-        DB::table('personal_access_tokens')->where('token',Hash('sha256', $bearer))->delete();
+        $tokenable_id = DB::table('personal_access_tokens')->where('token',Hash('sha256', $bearer))->delete();
         return response()->json([
             'success' => true,
             'message' => 'Sukses Logout'
         ]);
     }
 
-    public function checkToken()
+    public function checkToken(Request $request)
     {
+        $user = UserHelper::getUser($request->bearerToken());
         return response()->json([
             'success' => true,
-            'message' => 'Token active'
+            'message' => 'Token active',
+            'data' => [
+                'name' => $user->name,
+            ]
         ]);
     }
 }

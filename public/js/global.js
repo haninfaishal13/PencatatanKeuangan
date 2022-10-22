@@ -4,15 +4,25 @@ $.ajaxSetup({
     }
 });
 
-var values = [],
-keys = Object.keys(localStorage),
-i = keys.length;
-
-while ( i-- ) {
-    values.push( localStorage.getItem(keys[i]) );
-    console.log(keys[i])
-}
-console.log(values)
+$('.sub-category-select').select2({
+    placeholder: 'Pilih Subkategori',
+    allowClear: true,
+    ajax: {
+        url: base_url + '/api/subcategory/select',
+        dataType: 'json',
+        cache: true,
+        data: function(params) {
+            return {
+                search: params.term,
+            }
+        },
+        processResults: function(resp) {
+            return {
+                results: resp.data
+            }
+        }
+    }
+})
 
 $(document).on('click', '#logout', function() {
     logout()
@@ -22,18 +32,22 @@ if(window.location.href != base_url + '/frontend') {
     checkToken()
 } else {
     if(localStorage.getItem('token') != null) {
-        checkToken()
+        // checkToken()
     } else {
         let button = `
             <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#login-modal">Login</button>
             <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#register-modal">Register</button>`
-        $('#auth-button').html(button)
+        $('#auth-button').html(button).removeClass('nav-item dropdown')
         if(localStorage.getItem('auth-warning') != null) {
             Swal.fire('Error', 'Anda belum login', 'error')
         }
-        if(localStorage.getItem('auth-logout') != null) {
+        else if(localStorage.getItem('auth-logout') != null) {
             Swal.fire('Success', 'Anda berhasil logout', 'success')
         }
+        else if(localStorage.getItem('auth-expired') != null) {
+            Swal.fire('Error', 'Anda perlu login ulang', 'error')
+        }
+        localStorage.removeItem('auth-expired')
         localStorage.removeItem('auth-warning')
         localStorage.removeItem('auth-logout')
     }
@@ -41,6 +55,7 @@ if(window.location.href != base_url + '/frontend') {
 }
 
 function checkToken() {
+    let pathname = window.location.pathname
     if(localStorage.getItem('token') != null) {
         $.ajax({
             url: base_url + '/api/auth/check-token',
@@ -48,21 +63,28 @@ function checkToken() {
             headers: {
                 "Authorization" : "Bearer "+localStorage.getItem('token')
             },
-            success: function() {
+            success: function(resp) {
                 let navbar_menu = `
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="${base_url + '/frontend/dashboard'}">Beranda</a>
+                    <a class="nav-link ${pathname == '/frontend/dashboard' ? 'active' : ''}" aria-current="page" href="${base_url + '/frontend/dashboard'}">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${base_url + '/frontend/kategori'}">Kategori</a>
+                    <a class="nav-link ${pathname == '/frontend/kategori' ? 'active' : ''}" href="${base_url + '/frontend/kategori'}">Kategori</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${base_url + '/frontend/keuangan'}">Keuangan</a>
+                    <a class="nav-link ${pathname == '/frontend/keuangan' ? 'active' : ''}" href="${base_url + '/frontend/keuangan'}">Keuangan</a>
                 </li>
                 `
-                let button = `<button class="btn btn-outline-primary btn-sm" id="logout">Logout</button>`
+                let button = `
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    ${resp.data.name}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#" id="profile">Profil</a></li>
+                    <li><a class="dropdown-item" href="#" id="logout">Logout</a></li>
+                </ul>`
                 $('#navbar-menu').html(navbar_menu)
-                $('#auth-button').html(button)
+                $('#auth-button').html(button).addClass('nav-item dropdown')
                 if(window.location.href == base_url + '/frontend') {
                     window.location.replace(base_url + '/frontend/dashboard')
                 }
@@ -71,8 +93,9 @@ function checkToken() {
                 let button = `
                     <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#login-modal">Login</button>
                     <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#register-modal">Register</button>`
-                $('#auth-button').html(button)
+                $('#auth-button').html(button).removeClass('nav-item dropdown')
                 localStorage.removeItem('token')
+                localStorage.setItem('auth-expired', true)
                 window.location.replace(base_url + '/frontend')
             }
         })
@@ -93,13 +116,11 @@ function logout() {
         }
     })
     .done(function() {
-        console.log('aaa')
         localStorage.removeItem('token')
         localStorage.setItem('auth-logout', true)
         window.location.replace(base_url + '/frontend')
     })
     .fail(function() {
-        console.log('bbb')
         localStorage.removeItem('token')
         localStorage.setItem('auth-warning', true)
         window.location.replace(base_url + '/frontend')

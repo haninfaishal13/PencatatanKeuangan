@@ -8,20 +8,47 @@ class KeuanganHelper
     public static function getKeuangan($request)
     {
         $user_id = UserHelper::getId($request->bearerToken());
-        $keuangan = Keuangan::with('sub_category')->where('user_id', $user_id)->get();
+        $keuangan = Keuangan::with('sub_category')->where('user_id', $user_id)->orderBy('tanggal', 'asc')->get();
         return $keuangan;
     }
 
     public static function getKeuanganAll($request)
     {
         $response = [];
-        $keuangan = self::getKeuangan($request);
+        $user_id = UserHelper::getId($request->bearerToken());
+        $keuangan = Keuangan::with('sub_category')->where('user_id', $user_id)->orderBy('tanggal', 'asc');
+        if($request->waktu == 'harian') {
+            $keuangan->where('tanggal', date('Y-m-d'));
+        } elseif($request->waktu == 'pekanan') {
+            $keuangan->whereBetween('tanggal', [date('Y-m-d', strtotime("this week")), date('Y-m-d', strtotime("sunday 0 week"))]);
+        } elseif($request->waktu == 'bulanan') {
+            $keuangan->whereBetween('tanggal', [date('Y-m-1'), date('Y-m-t')]);
+        } elseif($request->waktu == 'semua') {
+            $keuangan;
+        } else {
+            $keuangan->where('tanggal', date('Y-m-d'));
+        }
+
+        if($request->jenis != null) {
+            $keuangan->where('sub_category_id', $request->jenis);
+        }
+
+        if($request->tipe != null) {
+            if($request->tipe == 0) {
+                $keuangan->where('type', 0);
+            } elseif($request->tipe == 1) {
+                $keuangan->where('type', 1);
+            }
+        }
+
+        $keuangan = $keuangan->get();
         foreach($keuangan as $uang) {
             $tmp['id'] = $uang->id;
             $tmp['tujuan'] = $uang->sub_category->name;
             $tmp['nominal'] = $uang->nominal;
             $tmp['tanggal'] = date('d-m-Y', strtotime($uang->tanggal));
             $tmp['type'] = $uang->type;
+            $tmp['keterangan'] = $uang->keterangan;
             array_push($response, $tmp);
         }
         return $response;

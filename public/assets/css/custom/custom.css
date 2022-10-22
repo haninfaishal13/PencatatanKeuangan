@@ -5,3 +5,7 @@
 .custom-input-40 {
     width: 30%;
 }
+
+.select2-container {
+    z-index: 10000;
+}

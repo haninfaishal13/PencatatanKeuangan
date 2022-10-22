@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="login-email" class="form-label">Email:</label>
-                        <input type="text" name="username" id="login-email" placeholder="Username" class="form-control">
+                        <input type="text" name="username" id="login-email" placeholder="Email" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="login-password" class="form-label">Password:</label>
@@ -35,7 +35,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="register-name" class="form-label">Nama:</label>
-                        <input type="text" name="username" id="register-name" placeholder="Username" class="form-control">
+                        <input type="text" name="username" id="register-name" placeholder="Nama" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="register-email" class="form-label">Email:</label>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="confirm-password" class="form-label">Konfirmasi Password:</label>
-                        <input type="confirm-password" name="confirm-password" id="confirm-password" placeholder="Konfirmasi Passowrd" class="form-control">
+                        <input type="password" name="confirm-password" id="confirm-password" placeholder="Konfirmasi Passowrd" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
